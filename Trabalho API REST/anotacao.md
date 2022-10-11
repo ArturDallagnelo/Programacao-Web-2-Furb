@@ -2,6 +2,8 @@
 - npm install mongoose
 - npm install express
 - npm install nodemon
+- npm install bcrypt
+- npm install passport
 
 # Executar Projeto
 - npm run dev
