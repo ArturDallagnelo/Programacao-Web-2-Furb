@@ -2,6 +2,7 @@ import express from "express";
 import alunos from "./alunosRoutes.js"
 import cursos from "./cursosRoutes.js"
 import usuarios from "./usuariosRoutes.js"
+import teste2 from "../controllers/autenticacaoController.js"
 
 // Index do Servidor
 
@@ -14,8 +15,10 @@ const routes = (app) => {
     express.json(),
     alunos,
     cursos,
-    usuarios
+    usuarios,
+    teste2
   )
 }
+
 
 export default routes
