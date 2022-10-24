@@ -70,7 +70,7 @@ class AlunosController {
     })
   }
 
-  static listarAlunosPorSemestre() {
+  static listarAlunosPorSemestre = (req, res) => {
     const semestre = req.query.semestre
 
     alunos.find({'semestre': semestre}, {}, (err, alunos) => {

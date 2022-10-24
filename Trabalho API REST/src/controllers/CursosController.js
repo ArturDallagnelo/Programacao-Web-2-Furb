@@ -77,7 +77,7 @@ class CursosController {
     const horas = req.query.cargaHoraria
     const nomeCurso = req.query.nomeCurso
 
-    cursos.find({'Curso': nomeCurso + "-" + horas}, {}, (err, curso) => {
+    cursos.find({'cargaHoraria': horas}, {}, (err, curso) => {
       res.status(200).send(curso);
 
     })
@@ -86,7 +86,7 @@ class CursosController {
   static listarCursoPorQuantidadeDeDisciplinas = (req, res) => {
     const qtdDisciplinas = req.query.qtdDisciplinas
 
-    cursos.find({'Quantidade de Disciplinas': qtdDisciplinas}, {}, (err, curso) => {
+    cursos.find({'qtdDisciplinas': qtdDisciplinas}, {}, (err, curso) => {
       res.status(200).send(curso);
 
     })
