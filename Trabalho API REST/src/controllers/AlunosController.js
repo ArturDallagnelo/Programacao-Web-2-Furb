@@ -82,7 +82,7 @@ class AlunosController {
   static listarAlunoPorNome = (req, res) => {
     let nomeAluno = req.params.nome;
 
-    aluno.find({nome: {$regex: `${nomeAluno}`}}, (err, alunos) => {
+    alunos.find({nome: {$regex: `${nomeAluno}`}}, (err, alunos) => {
       if (err) throw err;
       res.status(200).send(alunos);
     });
