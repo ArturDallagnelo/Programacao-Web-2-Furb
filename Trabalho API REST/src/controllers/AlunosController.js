@@ -4,24 +4,24 @@ class AlunosController {
 
   static listarAlunos = (req, res) => {
     alunos.find()
-      .populate('curso')
-      .exec((err, alunos) => {
-        res.status(200).json(alunos)
-  })
+        .populate('curso')
+        .exec((err, alunos) => {
+          res.status(200).json(alunos)
+        })
   }
 
   static listarAlunosPorId = (req, res) => {
     const id = req.params.id;
 
     alunos.findById(id)
-      .populate('curso', 'nome')
-      .exec((err, alunos) => {
-      if(err) {
-        res.status(400).send({message: `${err.message} - Id do Aluno não localizado.`})
-      } else {
-        res.status(200).send(alunos);
-      }
-    })
+        .populate('curso', 'nome')
+        .exec((err, alunos) => {
+          if (err) {
+            res.status(400).send({message: `${err.message} - Id do Aluno não localizado.`})
+          } else {
+            res.status(200).send(alunos);
+          }
+        })
   }
 
   static cadastrarAlunos = (req, res) => {
@@ -29,7 +29,7 @@ class AlunosController {
 
     aluno.save((err) => {
 
-      if(err) {
+      if (err) {
         res.status(500).send({message: `${err.message} - Falha ao cadastrar Aluno.`})
       } else {
         res.status(201).send(aluno.toJSON())
@@ -41,7 +41,7 @@ class AlunosController {
     const id = req.params.id;
 
     alunos.findByIdAndUpdate(id, {$set: req.body}, (err) => {
-      if(!err) {
+      if (!err) {
         res.status(200).send({message: 'Aluno atualizado com sucesso'})
       } else {
         res.status(500).send({message: err.message})
@@ -53,7 +53,7 @@ class AlunosController {
     const id = req.params.id;
 
     alunos.findByIdAndDelete(id, (err) => {
-      if(!err){
+      if (!err) {
         res.status(200).send({message: 'Aluno removido com sucesso'})
       } else {
         res.status(500).send({message: err.message})
@@ -78,6 +78,16 @@ class AlunosController {
 
     })
   }
+
+  static listarAlunoPorNome = (req, res) => {
+    let nomeAluno = req.params.nome;
+
+    aluno.find({nome: {$regex: `${nomeAluno}`}}, (err, alunos) => {
+      if (err) throw err;
+      res.status(200).send(alunos);
+    });
+  }
+
 }
 
 export default AlunosController

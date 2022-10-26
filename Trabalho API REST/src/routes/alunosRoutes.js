@@ -7,6 +7,7 @@ router
     .get("/alunos", AlunosController.listarAlunos)
     .get("/alunos/busca", AlunosController.listarAlunosPorCurso)
     .get("/alunos/semestre", AlunosController.listarAlunosPorSemestre)
+    .get("/alunos/nome/:nome", AlunosController.listarAlunoPorNome)
     .get("/alunos/:id", AlunosController.listarAlunosPorId)
     .post("/alunos", AlunosController.cadastrarAlunos)
     .put("/alunos/:id", AlunosController.atualizarAlunos)
