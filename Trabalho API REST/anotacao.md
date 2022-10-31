@@ -4,7 +4,7 @@
 - npm install nodemon
 - npm install bcrypt
 - npm install passport
-
+- npm install passport-local
 # Executar Projeto
 - npm run dev
 
