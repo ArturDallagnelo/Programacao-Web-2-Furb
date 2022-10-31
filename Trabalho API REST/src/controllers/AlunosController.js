@@ -4,7 +4,6 @@ class AlunosController {
 
   static listarAlunos = (req, res) => {
     alunos.find()
-        .populate('curso')
         .exec((err, alunos) => {
           res.status(200).json(alunos)
         })
@@ -14,7 +13,7 @@ class AlunosController {
     const id = req.params.id;
 
     alunos.findById(id)
-        .populate('curso', 'nome')
+        .populate('nome')
         .exec((err, alunos) => {
           if (err) {
             res.status(400).send({message: `${err.message} - Id do Aluno não localizado.`})
