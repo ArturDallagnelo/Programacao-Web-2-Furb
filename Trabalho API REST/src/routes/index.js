@@ -2,13 +2,16 @@ import express from "express";
 import alunos from "./alunosRoutes.js"
 import cursos from "./cursosRoutes.js"
 import usuarios from "./usuariosRoutes.js"
-import teste2 from "../controllers/autenticacaoController.js"
+import auth from "../controllers/AutenticacaoController.js"
+import passport from "passport";
+import authToken from "../controllers/AutenticacaoTokenController.js";
 
-// Index do Servidor
+auth(passport)
+authToken(passport)
 
 const routes = (app) => {
   app.route('/').get((req, res) => {
-    res.status(200).send({titulo: "Trabalho API REST Programação Web II"})
+    res.status(200).send({ titulo: "Trabalho API REST Programação Web II" })
   })
 
   app.use(
@@ -16,9 +19,9 @@ const routes = (app) => {
     alunos,
     cursos,
     usuarios,
-    teste2
+    auth,
+    authToken
   )
 }
-
 
 export default routes
