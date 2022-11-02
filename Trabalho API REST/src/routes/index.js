@@ -5,6 +5,7 @@ import usuarios from "./usuariosRoutes.js"
 import auth from "../controllers/AutenticacaoController.js"
 import passport from "passport";
 import authToken from "../controllers/AutenticacaoTokenController.js";
+import MiddlewareAutenticacao from "../models/MiddlewareAutenticacao.js"
 
 auth(passport)
 authToken(passport)

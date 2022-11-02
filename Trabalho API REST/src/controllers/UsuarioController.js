@@ -58,7 +58,7 @@ class UsuarioController {
     };
 
     //gerar o token a partir do payload
-    const token = jwt.sign(payload, process.env.CHAVE_JWT);
+    const token = jwt.sign(payload, process.env.CHAVE_JWT, {expiresIn: '15m'});
     return token;
   }
 
@@ -72,6 +72,13 @@ class UsuarioController {
     validacoes.verificaNulo(usuario.email);
     validacoes.verificaTamanhoMin(usuario.senha, 'senha', 5);
     validacoes.verificaTamanhoMax(usuario.senha, 'senha', 15);
+  }
+
+  static getAllUsuarios = (req, res) => {
+    Usuario.find()
+      .exec((err, Usuario) => {
+        res.status(200).json(Usuario)
+      })
   }
 
 }
