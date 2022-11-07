@@ -74,8 +74,7 @@ class CursosController {
   }
 
   static listarCursoPorCargaHoraria = (req, res) => {
-    const horas = req.query.cargaHoraria
-    const nomeCurso = req.query.nomeCurso
+    const horas = req.params.horas
 
     cursos.find({'cargaHoraria': horas}, {}, (err, curso) => {
       res.status(200).send(curso);
