@@ -62,10 +62,10 @@
     "_id": "63363f8b81476f7f10ae79bf",
     "nome": "Charles Bronson",
     "curso": {
-    "_id": "63363f5981476f7f10ae79bb",
-    "nomeCurso": "hue hue BR BR",
-    "nomeDisciplinas": "introdução ao meme",
-    "cargaHoraria": 3000
+      "_id": "63363f5981476f7f10ae79bb",
+      "nomeCurso": "hue hue BR BR",
+      "nomeDisciplinas": "introdução ao meme",
+      "cargaHoraria": 3000
     },
     "__v": 0
   }
