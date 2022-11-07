@@ -7,7 +7,6 @@ const router = express.Router();
 
 router
     .get("/alunos", AlunosController.listarAlunos)
-    .get("/alunos/busca", AlunosController.listarAlunosPorCurso)
     .get("/alunos/semestre/:semestre", AlunosController.listarAlunosPorSemestre)
     .get("/alunos/nome/:nome", AlunosController.listarAlunoPorNome)
     .get("/alunos/:id", AlunosController.listarAlunosPorId)
