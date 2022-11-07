@@ -83,7 +83,7 @@ class CursosController {
   }
 
   static listarCursoPorQuantidadeDeDisciplinas = (req, res) => {
-    const qtdDisciplinas = req.query.qtdDisciplinas
+    const qtdDisciplinas = req.params.qtdDisciplinas
 
     cursos.find({'qtdDisciplinas': qtdDisciplinas}, {}, (err, curso) => {
       res.status(200).send(curso);

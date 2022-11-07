@@ -7,7 +7,7 @@ const router = express.Router();
 router
     .get("/cursos", CursosController.listarCursos)
     .get("/cursos/horas/:horas", CursosController.listarCursoPorCargaHoraria)
-    .get("/cursos/disciplinas", CursosController.listarCursoPorQuantidadeDeDisciplinas)
+    .get("/cursos/disciplinas/:qtdDisciplinas", CursosController.listarCursoPorQuantidadeDeDisciplinas)
     .get("/cursos/:id", CursosController.listarCursosPorId)
     .post("/cursos", MiddlewareAutenticacao.bearer, CursosController.cadastrarCursos)
     .put("/cursos/:id", MiddlewareAutenticacao.bearer, CursosController.atualizarCursos)
