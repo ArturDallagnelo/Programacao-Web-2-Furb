@@ -63,11 +63,6 @@ class UsuarioController {
   }
 
   static validarUsuario(usuario) {
-
-    if (this.buscaPorEmail(usuario.email)) {
-      throw new Error("Já existe um usuário com este email!")
-    }
-
     validacoes.verificaNulo(usuario.nome);
     validacoes.verificaNulo(usuario.email);
     validacoes.verificaTamanhoMin(usuario.senha, 'senha', 5);
