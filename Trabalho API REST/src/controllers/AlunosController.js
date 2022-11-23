@@ -1,81 +1,102 @@
-import alunos from "../models/Aluno.js";
+import Aluno from "../models/Aluno.js";
+import Curso from "../models/Curso.js";
 
 class AlunosController {
 
-  static listarAlunos = (req, res) => {
-    alunos.find()
-        .exec((err, alunos) => {
-          res.status(200).json(alunos)
-        })
+  static listarAlunos = async (req, res) => {
+    try {
+      const alunos = await Aluno.find().populate('cursos');
+      return res.send({ alunos });
+
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar alunos" });
+    }
   }
 
-  static listarAlunosPorId = (req, res) => {
-    const id = req.params.id;
+  static listarAlunosPorId = async (req, res) => {
+    try {
+      const alunos = await Aluno.findById(req.params.id).populate('cursos');
+      return res.send({ alunos });
 
-    alunos.findById(id)
-        .populate('nome')
-        .exec((err, alunos) => {
-          if (err) {
-            res.status(400).send({message: `${err.message} - Id do Aluno não localizado.`})
-          } else {
-            res.status(200).send(alunos);
-          }
-        })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o aluno" })
+    }
   }
 
-  static cadastrarAlunos = (req, res) => {
-    let aluno = new alunos(req.body);
+  static cadastrarAlunos = async (req, res) => {
+    try {
+      const { nome, semestre, cursos } = req.body;
 
-    aluno.save((err) => {
+      const alunos = await Aluno.create({ nome, semestre });
 
-      if (err) {
-        res.status(500).send({message: `${err.message} - Falha ao cadastrar Aluno.`})
-      } else {
-        res.status(201).send(aluno.toJSON())
-      }
-    })
+      await Promise.all(cursos.map(async curso => {
+        const alunoCurso = new Curso({ ...curso, alunos: alunos._id});
+
+        await alunoCurso.save();
+
+        alunos.cursos.push(alunoCurso);
+      }));
+
+      await alunos.save();
+
+      return res.send({ alunos });
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao cadastrar aluno" })
+    }
   }
 
-  static atualizarAlunos = (req, res) => {
-    const id = req.params.id;
+  static atualizarAlunos = async (req, res) => {
+    try {
+      const { nome, semestre, cursos } = req.body;
+      const alunos = await Aluno.findByIdAndUpdate(req.params.id, { nome, semestre }, { new: true });
 
-    alunos.findByIdAndUpdate(id, {$set: req.body}, (err) => {
-      if (!err) {
-        res.status(200).send({message: 'Aluno atualizado com sucesso'})
-      } else {
-        res.status(500).send({message: err.message})
-      }
-    })
+      alunos.cursos = [];
+      await Curso.remove({ alunos: alunos._id });
+
+      await Promise.all(cursos.map(async curso => {
+        const alunoCurso = new Curso({ ...curso, alunos: alunos._id});
+
+        await alunoCurso.save();
+
+        alunos.cursos.push(alunoCurso);
+      }));
+
+      await alunos.save();
+      return res.send({ alunos });
+
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao atualizar aluno" })
+    }
   }
 
-  static excluirAlunos = (req, res) => {
-    const id = req.params.id;
+  static excluirAlunos = async (req, res) => {
+    try {
+      const alunos = await Aluno.findByIdAndDelete(req.params.id).populate('cursos');
+      return res.send({ alunos });
 
-    alunos.findByIdAndDelete(id, (err) => {
-      if (!err) {
-        res.status(200).send({message: 'Aluno removido com sucesso'})
-      } else {
-        res.status(500).send({message: err.message})
-      }
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao excluir aluno" });
+    }
   }
 
-  static listarAlunosPorSemestre = (req, res) => {
-    const semestre = req.params.semestre
+  static listarAlunosPorSemestre = async (req, res) => {
+    try {
+      const alunos = await Aluno.find({ 'semestre': req.params.semestre }).populate('cursos');
 
-    alunos.find({'semestre': semestre}, {}, (err, alunos) => {
-      res.status(200).send(alunos);
-
-    })
+      return res.send({ alunos });
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o aluno" })
+    }
   }
 
-  static listarAlunoPorNome = (req, res) => {
-    let nomeAluno = req.params.nome;
+  static listarAlunoPorNome = async (req, res) => {
+    try {
+      const alunos = await Aluno.find({ 'nome': {$regex: `${req.params.nome}`}}).populate('cursos');
 
-    alunos.find({nome: {$regex: `${nomeAluno}`}}, (err, alunos) => {
-      if (err) throw err;
-      res.status(200).send(alunos);
-    });
+      return res.send({ alunos });
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o aluno" })
+    }
   }
 
 }

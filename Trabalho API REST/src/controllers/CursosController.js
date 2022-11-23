@@ -1,4 +1,5 @@
-import cursos from "../models/Curso.js";
+import Curso from "../models/Curso.js";
+import Aluno from "../models/Aluno.js";
 
 class CursosController {
 
@@ -12,83 +13,99 @@ class CursosController {
   //   res.status(408).send({message: `${err.message} - Time-out`})
   // }
 
+  static listarCursos = async (req, res) => {
+    try {
+      const cursos = await Curso.find().populate('alunos');
+      return res.send({ cursos })
 
-
-  static listarCursos = (req, res) => {
-    cursos.find((err, cursos) => {
-      if(!err) {
-        res.status(200).json(cursos)
-      } else {
-        res.status(401).send({message: `${err.message} - Usuário não autenticado`})
-      }
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar cursos" });
+    }
   }
 
-  static listarCursosPorId = (req, res) => {
-    const id = req.params.id;
+  static listarCursosPorId = async (req, res) => {
+    try {
+      const cursos = await Curso.findById(req.params.id).populate('alunos');
+      return res.send({ cursos });
 
-    cursos.findById(id, (err, cursos) => {
-      if(err) {
-        res.status(400).send({message: `${err.message} - Id do Curso não localizado.`})
-      } else {
-        res.status(200).send(cursos);
-      }
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o curso"});
+    }
   }
 
-  static cadastrarCursos = (req, res) => {
-    let curso = new cursos(req.body);
+  static cadastrarCursos = async (req, res) => {
+    try {
+      const { nomeCurso, qtdDisciplinas, cargaHoraria, alunos } = req.body;
 
-    curso.save((err) => {
+      const cursos = await Curso.create({ nomeCurso, qtdDisciplinas, cargaHoraria });
 
-      if(err) {
-        res.status(500).send({message: `${err.message} - Falha ao cadastrar Curso.`})
-      } else {
-        res.status(201).send(curso.toJSON())
-      }
-    })
+      await Promise.all(alunos.map(async aluno => {
+        const cursoAluno = new Aluno({ ...aluno, cursos: cursos._id });
+
+        await cursoAluno.save();
+
+        cursos.alunos.push(cursoAluno);
+      }));
+
+      await cursos.save();
+
+      return res.send({ cursos });
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao cadastrar curso" })
+    }
   }
 
-  static atualizarCursos = (req, res) => {
-    const id = req.params.id;
+  static atualizarCursos = async (req, res) => {
+    try {
+      const { nomeCurso, qtdDisciplinas, cargaHoraria, alunos } = req.body;
+      const cursos = await Curso.findByIdAndUpdate(req.params.id, { nomeCurso, qtdDisciplinas, cargaHoraria }, { new: true });
 
-    cursos.findByIdAndUpdate(id, {$set: req.body}, (err) => {
-      if(!err) {
-        res.status(200).send({message: 'Curso atualizado com sucesso'})
-      } else {
-        res.status(500).send({message: err.message})
-      }
-    })
+      cursos.alunos = [];
+      await Aluno.remove({ alunos: alunos._id });
+
+      await Promise.all(alunos.map(async aluno => {
+        const cursoAluno = new Aluno({ ...aluno, cursos: cursos._id });
+
+        await cursoAluno.save();
+
+        cursos.alunos.push(cursoAluno);
+      }));
+
+      await cursos.save();
+      return res.send({ cursos });
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao atualizar curso" })
+    }
   }
 
-  static excluirCursos = (req, res) => {
-    const id = req.params.id;
+  static excluirCursos = async (req, res) => {
+    try {
+      const cursos = await Curso.findByIdAndDelete(req.params.id).populate('alunos');
+      return res.send({ cursos });
 
-    cursos.findByIdAndDelete(id, (err) => {
-      if(!err){
-        res.status(200).send({message: 'Curso removido com sucesso'})
-      } else {
-        res.status(500).send({message: err.message})
-      }
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao excluir curso" });
+    }
   }
 
-  static listarCursoPorCargaHoraria = (req, res) => {
-    const horas = req.params.horas
+  static listarCursoPorCargaHoraria = async (req, res) => {
+    try {
+      const cursos = await Curso.find({ 'cargaHoraria': req.params.horas }).populate('alunos');
+      return res.send({ cursos });
 
-    cursos.find({'cargaHoraria': horas}, {}, (err, curso) => {
-      res.status(200).send(curso);
-
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o curso" });
+    }
   }
 
-  static listarCursoPorQuantidadeDeDisciplinas = (req, res) => {
-    const qtdDisciplinas = req.params.qtdDisciplinas
+  static listarCursoPorQuantidadeDeDisciplinas = async (req, res) => {
+    try {
+      const cursos = await Curso.find({ 'qtdDisciplinas': req.params.qtdDisciplinas }).populate('alunos')
+      return res.send({ cursos });
 
-    cursos.find({'qtdDisciplinas': qtdDisciplinas}, {}, (err, curso) => {
-      res.status(200).send(curso);
-
-    })
+    } catch (err) {
+      return res.status(400).send({ error: "Erro ao listar o curso" });
+    }
   }
 }
 

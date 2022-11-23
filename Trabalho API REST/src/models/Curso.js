@@ -6,7 +6,7 @@ const cursoSchema = new mongoose.Schema(
     nomeCurso: {type: String, required: true},
     qtdDisciplinas: {type: Number, required: true},
     cargaHoraria: {type: Number, required: true},
-    alunos: [{type: mongoose.Schema.Types.ObjectId, ref: 'aluno'}]
+    alunos: [{type: mongoose.Schema.Types.ObjectId, ref: 'alunos'}]
   },
   {
     versionKey: false
